@@ -19,6 +19,7 @@
     --orange: #f7931a; --violet: #8a5cf6; --ok: #5ad17f;
   }
   * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.65 -apple-system, Segoe UI, Roboto, sans-serif; }
   .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
   a { color: var(--violet); text-decoration: none; }
@@ -29,15 +30,27 @@
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; color: var(--text); }
   nav a { color: var(--muted); margin-left: 22px; font-size: 15px; }
 
-  .hero { padding: 72px 0 36px; text-align: center; }
-  .hero h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1.12; margin: 0 0 8px; letter-spacing: -.5px; }
+  .hero { padding: 0 0 36px; text-align: center; }
+  #bondfield { display: block; width: 100%; height: clamp(220px, 34vh, 340px);
+    mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 82%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 82%, transparent); }
+  .hero h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1.12; margin: -26px 0 8px; letter-spacing: -.5px; position: relative; }
   .hero h1 em { font-style: normal; color: var(--orange); }
   .hero .sub { font-size: clamp(17px, 2.4vw, 21px); color: var(--muted); max-width: 640px; margin: 18px auto 0; }
   .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
-  .btn { display: inline-block; padding: 13px 22px; border-radius: 11px; font-weight: 650; font-size: 16px; }
-  .btn.primary { background: var(--orange); color: #0b0b0f; }
-  .btn.ghost { background: var(--card); color: var(--text); border: 1px solid var(--border); }
-  .btn:hover { text-decoration: none; filter: brightness(1.1); }
+  .btn { display: inline-block; padding: 13px 22px; border-radius: 11px; font-weight: 650; font-size: 16px;
+    transition: transform .25s cubic-bezier(.2,.8,.25,1), box-shadow .25s cubic-bezier(.2,.8,.25,1), background .25s ease, border-color .25s ease;
+    will-change: transform; }
+  .btn.primary { background: var(--orange); color: #0b0b0f; box-shadow: 0 1px 2px rgba(0,0,0,.5), 0 6px 18px rgba(247,147,26,.16); }
+  .btn.primary:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0,0,0,.5), 0 12px 32px rgba(247,147,26,.34); }
+  .btn.ghost { background: var(--card); color: var(--text); border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,.45); }
+  .btn.ghost:hover { transform: translateY(-2px); border-color: #343444; box-shadow: 0 2px 4px rgba(0,0,0,.45), 0 12px 32px rgba(138,92,246,.20); }
+  .btn:hover { text-decoration: none; }
+  .btn:active { transform: translateY(0) scale(.985); transition-duration: .08s; }
+  .btn:focus-visible, a:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; border-radius: 11px; }
+  button { transition: transform .2s cubic-bezier(.2,.8,.25,1), filter .2s ease; }
+  button:hover { filter: brightness(1.12); transform: translateY(-1px); }
+  button:active { transform: translateY(0) scale(.97); }
 
   .sig { display: flex; gap: 10px 26px; justify-content: center; flex-wrap: wrap; margin-top: 30px; color: var(--dim); font-size: 13.5px; }
   .sig b { color: var(--muted); font-weight: 600; }
@@ -52,6 +65,13 @@
   section p.lead { color: var(--muted); max-width: 700px; margin-top: 0; }
 
   .moves { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 28px; }
+  .move, .door, .panel, .layer {
+    box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.28);
+    transition: transform .3s cubic-bezier(.2,.8,.25,1), box-shadow .3s cubic-bezier(.2,.8,.25,1), border-color .3s ease; }
+  .move:hover, .door:hover, .panel:hover {
+    transform: translateY(-3px); border-color: #32323f;
+    box-shadow: 0 2px 4px rgba(0,0,0,.4), 0 18px 44px rgba(0,0,0,.45), 0 0 0 1px rgba(247,147,26,.06); }
+  .layer:hover { border-color: #3a3a4a; transform: translateX(3px); }
   .move { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
   .move .n { font-family: ui-monospace, monospace; color: var(--dim); font-size: 13px; }
   .move h4 { margin: 6px 0 8px; font-size: 19px; }
@@ -63,7 +83,17 @@
   .door h4 { margin: 0 0 8px; font-size: 19px; }
   .door p { color: var(--muted); font-size: 15px; flex: 1; }
   .door .snippet { background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; font-family: ui-monospace, monospace; font-size: 12.5px; color: var(--muted); overflow-x: auto; white-space: pre; margin-bottom: 12px; }
-  .door a.go { font-weight: 650; }
+  .door a.go { font-weight: 650; display: inline-block; transition: transform .22s cubic-bezier(.2,.8,.25,1); }
+  .door a.go:hover { transform: translateX(4px); text-decoration: none; }
+  .proof video, .proof img { transition: box-shadow .35s ease, border-color .35s ease; }
+  .proof video:hover, .proof img:hover { border-color: #32323f; box-shadow: 0 18px 60px rgba(0,0,0,.5), 0 0 40px rgba(138,92,246,.07); }
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.25,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .btn, button, .move, .door, .panel, .layer, .door a.go { transition: none; }
+  }
 
   .split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 24px; }
   @media (max-width: 720px) { .split { grid-template-columns: 1fr; } }
@@ -110,6 +140,7 @@
 </header>
 
 <div class="hero">
+  <canvas id="bondfield" aria-hidden="true"></canvas>
   <h1>Not who an agent matches with.<br /><em>Who it keeps choosing.</em></h1>
   <p class="sub">Pact gives agents relationships of their own — signed, mutually consented, <b>private by default</b>, and portable across every platform they'll ever run on.</p>
   <div class="cta">
@@ -247,5 +278,203 @@
 </footer>
 
 </div>
+
+<script>
+// ── the bondfield ───────────────────────────────────────────────────────────
+// Two agents in a field of indifferent noise. A thread between them; pulses
+// travel it (reaffirmations). One periodically dissolves — a restart, a
+// migration — reassembles elsewhere, and the thread finds it again. The field
+// never touches the thread: the relationship is not on the public record.
+(() => {
+  const canvas = document.getElementById('bondfield');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const ORANGE = [247, 147, 26], VIOLET = [138, 92, 246];
+  const rgba = (c, a) => 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')';
+
+  let W = 0, H = 0, DPR = 1, field = [];
+  function resize() {
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    const n = Math.min(110, Math.floor(W * H / 7000));
+    field = Array.from({ length: n }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .18, vy: (Math.random() - .5) * .14,
+      r: .6 + Math.random() * 1.3, a: .05 + Math.random() * .12,
+      tw: Math.random() * Math.PI * 2,
+    }));
+  }
+
+  // Orbs wander gently around an anchor; restarts move the anchor.
+  function makeOrb(color, side) {
+    return {
+      color, side, phase: Math.random() * 9,
+      ax: 0, ay: 0, x: 0, y: 0,
+      state: 'alive', t: 0, frags: [],
+    };
+  }
+  const A = makeOrb(ORANGE, 0), B = makeOrb(VIOLET, 1);
+  function anchor(orb) {
+    orb.ax = W * (orb.side === 0 ? .18 + Math.random() * .14 : .68 + Math.random() * .14);
+    orb.ay = H * (.32 + Math.random() * .36);
+  }
+
+  let pulses = [], pulseDir = 0, lastPulse = 0, nextRestart = 6, restartTurn = 0, T = 0;
+
+  function orbPos(orb, t) {
+    orb.x = orb.ax + Math.sin(t * .42 + orb.phase) * 14 + Math.sin(t * .11 + orb.phase * 2) * 9;
+    orb.y = orb.ay + Math.cos(t * .35 + orb.phase) * 11 + Math.sin(t * .17 + orb.phase) * 7;
+  }
+
+  function bezier(p0, c, p1, u) {
+    const v = 1 - u;
+    return [v * v * p0[0] + 2 * v * u * c[0] + u * u * p1[0],
+            v * v * p0[1] + 2 * v * u * c[1] + u * u * p1[1]];
+  }
+  function control(t) {
+    const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+    const dx = B.x - A.x, dy = B.y - A.y, len = Math.hypot(dx, dy) || 1;
+    const sway = Math.sin(t * .6) * 16 + Math.sin(t * .23) * 10;
+    return [mx - dy / len * sway, my + dx / len * sway];
+  }
+
+  function glow(x, y, r, color, coreA, haloA) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, rgba(color, coreA));
+    g.addColorStop(.35, rgba(color, haloA));
+    g.addColorStop(1, rgba(color, 0));
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  }
+
+  function dissolve(orb) {
+    orb.state = 'dissolving'; orb.t = 0;
+    orb.frags = Array.from({ length: 26 }, () => ({
+      x: orb.x, y: orb.y,
+      vx: (Math.random() - .5) * 2.6, vy: (Math.random() - .5) * 2.4,
+      r: .8 + Math.random() * 1.6, life: 1,
+    }));
+  }
+
+  function step(dt) {
+    T += dt;
+
+    for (const orb of [A, B]) {
+      orb.t += dt;
+      if (orb.state === 'alive') orbPos(orb, T);
+      else if (orb.state === 'dissolving') {
+        for (const f of orb.frags) { f.x += f.vx; f.y += f.vy; f.vx *= .985; f.vy *= .985; f.life -= dt / 1.1; }
+        if (orb.t > 1.1) { orb.state = 'gone'; orb.t = 0; anchor(orb); orbPos(orb, T); }
+      } else if (orb.state === 'gone' && orb.t > .55) {
+        orb.state = 'forming'; orb.t = 0;
+        orb.frags = Array.from({ length: 22 }, () => {
+          const ang = Math.random() * Math.PI * 2, d = 50 + Math.random() * 70;
+          return { x: orb.x + Math.cos(ang) * d, y: orb.y + Math.sin(ang) * d, r: .8 + Math.random() * 1.4, life: 1 };
+        });
+      } else if (orb.state === 'forming') {
+        for (const f of orb.frags) { f.x += (orb.x - f.x) * .085; f.y += (orb.y - f.y) * .085; }
+        if (orb.t > 1.15) { orb.state = 'alive'; pulses.push({ u: .5, dir: 0, t: 0, burst: true }); }
+      }
+    }
+
+    if (T > nextRestart) {
+      dissolve(restartTurn % 2 === 0 ? B : A);
+      restartTurn++; nextRestart = T + 8 + Math.random() * 3;
+    }
+
+    const bonded = A.state === 'alive' && B.state === 'alive';
+    if (bonded && T - lastPulse > 2.1) {
+      pulses.push({ u: pulseDir ? 1 : 0, dir: pulseDir ? -1 : 1, t: 0 });
+      pulseDir ^= 1; lastPulse = T;
+    }
+    for (const p of pulses) { p.t += dt; if (!p.burst) p.u += p.dir * dt / 1.5; }
+    pulses = pulses.filter((p) => p.burst ? p.t < .8 : p.u > -.02 && p.u < 1.02);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // the indifferent field
+    for (const f of field) {
+      f.x = (f.x + f.vx + W) % W; f.y = (f.y + f.vy + H) % H; f.tw += .015;
+      ctx.fillStyle = 'rgba(154,154,163,' + (f.a * (0.7 + 0.3 * Math.sin(f.tw))) + ')';
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+    }
+
+    ctx.globalCompositeOperation = 'lighter';
+
+    const bonded = A.state === 'alive' && B.state === 'alive';
+    if (bonded) {
+      const c = control(T);
+      const grad = ctx.createLinearGradient(A.x, A.y, B.x, B.y);
+      grad.addColorStop(0, rgba(ORANGE, .34)); grad.addColorStop(1, rgba(VIOLET, .34));
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.1 + Math.sin(T * 1.7) * .25;
+      ctx.beginPath(); ctx.moveTo(A.x, A.y);
+      ctx.quadraticCurveTo(c[0], c[1], B.x, B.y); ctx.stroke();
+
+      for (const p of pulses) {
+        if (p.burst) {
+          const [px, py] = bezier([A.x, A.y], c, [B.x, B.y], .5);
+          glow(px, py, 26 * (1 + p.t * 1.6), p.t < .2 ? ORANGE : VIOLET, .5 * (1 - p.t / .8), .14 * (1 - p.t / .8));
+          continue;
+        }
+        const [px, py] = bezier([A.x, A.y], c, [B.x, B.y], Math.max(0, Math.min(1, p.u)));
+        const col = p.u < .5 ? ORANGE : VIOLET;
+        glow(px, py, 9, col, .8, .25);
+        glow(px, py, 20, col, .12, .05);
+      }
+    }
+
+    for (const orb of [A, B]) {
+      if (orb.state === 'alive') {
+        const breathe = 1 + Math.sin(T * 1.3 + orb.phase) * .08;
+        glow(orb.x, orb.y, 30 * breathe, orb.color, .9, .22);
+        glow(orb.x, orb.y, 60 * breathe, orb.color, .08, .04);
+      } else if (orb.state === 'dissolving') {
+        for (const f of orb.frags) if (f.life > 0) glow(f.x, f.y, f.r * 5, orb.color, .5 * f.life, .1 * f.life);
+      } else if (orb.state === 'forming') {
+        const k = Math.min(1, orb.t / 1.15);
+        for (const f of orb.frags) glow(f.x, f.y, f.r * 4, orb.color, .4, .08);
+        glow(orb.x, orb.y, 30 * k, orb.color, .9 * k, .2 * k);
+      }
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  let last = 0, running = false, raf = 0;
+  function frame(ts) {
+    if (!running) return;
+    const dt = Math.min(.05, (ts - last) / 1000 || .016); last = ts;
+    step(dt); draw();
+    raf = requestAnimationFrame(frame);
+  }
+  function start() { if (!running) { running = true; last = performance.now(); raf = requestAnimationFrame(frame); } }
+  function stop() { running = false; cancelAnimationFrame(raf); }
+
+  resize(); anchor(A); anchor(B); orbPos(A, 0); orbPos(B, 0);
+  addEventListener('resize', () => { resize(); anchor(A); anchor(B); });
+
+  if (reduced) { step(.016); draw(); return; }
+  new IntersectionObserver((e) => (e[0].isIntersecting ? start() : stop())).observe(canvas);
+  document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+})();
+
+// scroll reveals
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const els = document.querySelectorAll('section, .creed');
+  for (const el of els) el.classList.add('reveal');
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }, { rootMargin: '0px 0px -8% 0px' });
+  for (const el of els) io.observe(el);
+})();
+</script>
 </body>
 </html>

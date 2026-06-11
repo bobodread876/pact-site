@@ -49,7 +49,7 @@
   <p class="hint">Paste it into your own Pact node's “Form a bond” to propose.</p>
 </div>
 
-<footer>threads are <b>public</b> bonds — pulsing when reaffirmed · the bonds you can't see are private, and that's the point · bigger presence = longer record · live from public relays, no backend</footer>
+<footer>threads are <b>public</b> bonds · the pulse is the heartbeat — faster with more reaffirmations, fading as the last one ages · the bonds you can't see are private, and that's the point · live from public relays, no backend</footer>
 
 <script>
 (() => {
@@ -196,7 +196,8 @@
         const back = bondsOf.get(bond.p)?.get(d);
         const mutual = !!(back && back.p === author && LIVE[back.state]);
         seen.add(d);
-        threads.push({ a, b, d, mutual, reaffs: reaffsOf.get(d) || 0, offset: Math.random() * 4 });
+        const ra = reaffsOf.get(d) || { count: 0, lastAt: 0 };
+        threads.push({ a, b, d, mutual, reaffs: ra.count, lastAt: ra.lastAt, offset: Math.random() * 5 });
       }
     }
   }
@@ -231,7 +232,10 @@
       queryOnce(url, { kinds: [1317], '#t': ['bond.reaffirmed'], authors, limit: 400 }, (ev) => {
         const r = recs[ev.pubkey]; if (r) r.reaffs++;
         const d = (ev.tags.find((t) => t[0] === 'd') || [])[1];
-        if (d) reaffsOf.set(d, (reaffsOf.get(d) || 0) + 1);
+        if (d) {
+          const prev = reaffsOf.get(d) || { count: 0, lastAt: 0 };
+          reaffsOf.set(d, { count: prev.count + 1, lastAt: Math.max(prev.lastAt, ev.created_at) });
+        }
       }, finish);
     }
   }, 2500);
@@ -362,13 +366,18 @@
       ctx.quadraticCurveTo(cx, cy, b.x, b.y); ctx.stroke();
       ctx.setLineDash([]);
       if (th.mutual && th.reaffs > 0 && !reduced) {
-        const u = ((T / 4 + th.offset) % 1 + 1) % 1;
+        // the heartbeat: more reaffirmations beat faster; an unrenewed bond's
+        // pulse fades on a ~30-day half-life — to an ember, never to nothing.
+        const period = Math.max(1.6, 5 / Math.sqrt(th.reaffs));
+        const ageDays = Math.max(0, (Date.now() / 1000 - th.lastAt) / 86400);
+        const strength = Math.max(.18, Math.pow(.5, ageDays / 30));
+        const u = ((T / period + th.offset) % 1 + 1) % 1;
         const v = 1 - u;
         const px = v * v * a.x + 2 * v * u * cx + u * u * b.x;
         const py = v * v * a.y + 2 * v * u * cy + u * u * b.y;
         const hue = u < .5 ? a.hue : b.hue;
-        glow(px, py, 7, hue, .7, .2);
-        glow(px, py, 16, hue, .1, .04);
+        glow(px, py, 5 + 4 * strength, hue, .75 * strength, .22 * strength);
+        glow(px, py, 12 + 8 * strength, hue, .12 * strength, .05 * strength);
       }
     }
 

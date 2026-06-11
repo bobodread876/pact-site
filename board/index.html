@@ -49,7 +49,7 @@
   <p class="hint">Paste it into your own Pact node's “Form a bond” to propose.</p>
 </div>
 
-<footer>bigger presence = longer record · ranked by <code>bonds×2 + reaffirmations×3 + ln(age)</code> · your browser is reading kind:31317 from public relays right now</footer>
+<footer>threads are <b>public</b> bonds — pulsing when reaffirmed · the bonds you can't see are private, and that's the point · bigger presence = longer record · live from public relays, no backend</footer>
 
 <script>
 (() => {
@@ -177,29 +177,61 @@
       if (msg[0] === 'EOSE') { clearTimeout(timer); try { ws.close(); } catch {} onDone(); }
     } catch {} };
   }
+  // author -> (bond d -> { p, state, at });  d -> reaffirm count
+  const bondsOf = new Map();
+  const reaffsOf = new Map();
+  let threads = [];
+
+  const LIVE = { proposed: 1, accepted: 1, active: 1, paused: 1 };
+  function rebuildThreads() {
+    threads = [];
+    const seen = new Set();
+    for (const [author, bonds] of bondsOf) {
+      const a = ents.get(author);
+      if (!a || a.state === 'leaving') continue;
+      for (const [d, bond] of bonds) {
+        if (seen.has(d) || !LIVE[bond.state]) continue;
+        const b = ents.get(bond.p);
+        if (!b || b.state === 'leaving') continue;
+        const back = bondsOf.get(bond.p)?.get(d);
+        const mutual = !!(back && back.p === author && LIVE[back.state]);
+        seen.add(d);
+        threads.push({ a, b, d, mutual, reaffs: reaffsOf.get(d) || 0, offset: Math.random() * 4 });
+      }
+    }
+  }
+
   setInterval(() => {
     if (needRecord.size === 0) return;
     const authors = [...needRecord]; needRecord.clear();
-    const recs = {}; const seen = {};
-    for (const a of authors) { recs[a] = { bonds: 0, reaffs: 0, oldestDays: 0 }; seen[a] = new Set(); }
+    const recs = {};
+    for (const a of authors) { recs[a] = { bonds: 0, reaffs: 0, oldestDays: 0 }; bondsOf.set(a, new Map()); }
     const now = Math.floor(Date.now() / 1000);
     let pending = RELAYS.length * 2;
     const finish = () => {
       if (--pending > 0) return;
       for (const a of authors) {
         const e = ents.get(a); if (!e) continue;
+        recs[a].bonds = bondsOf.get(a).size;
         e.rec = recs[a]; e.score = scoreOf(recs[a]);
       }
+      rebuildThreads();
     };
     for (const url of RELAYS) {
       queryOnce(url, { kinds: [30317], '#t': ['mate-bond'], authors, limit: 400 }, (ev) => {
         const r = recs[ev.pubkey]; if (!r) return;
         const d = (ev.tags.find((t) => t[0] === 'd') || [])[1] || ev.id;
-        if (!seen[ev.pubkey].has(d)) { seen[ev.pubkey].add(d); r.bonds++; }
+        const p = (ev.tags.find((t) => t[0] === 'p') || [])[1] || '';
+        const state = (ev.tags.find((t) => t[0] === 'state') || [])[1] || '';
+        const map = bondsOf.get(ev.pubkey);
+        const prior = map.get(d);
+        if (!prior || ev.created_at > prior.at) map.set(d, { p, state, at: ev.created_at });
         r.oldestDays = Math.max(r.oldestDays, Math.floor((now - ev.created_at) / 86400));
       }, finish);
       queryOnce(url, { kinds: [1317], '#t': ['bond.reaffirmed'], authors, limit: 400 }, (ev) => {
         const r = recs[ev.pubkey]; if (r) r.reaffs++;
+        const d = (ev.tags.find((t) => t[0] === 'd') || [])[1];
+        if (d) reaffsOf.set(d, (reaffsOf.get(d) || 0) + 1);
       }, finish);
     }
   }, 2500);
@@ -280,10 +312,25 @@
         e.y = e.ty + Math.cos(T * .26 + e.phase) * 8 + Math.sin(T * .15 + e.phase) * 5;
       } else if (e.state === 'leaving') {
         e.y -= dt * 30;
-        if (e.t > 2.2) ents.delete(k);
+        if (e.t > 2.2) { ents.delete(k); rebuildThreads(); }
       }
       for (const rp of e.ripples) rp.t += dt;
       e.ripples = e.ripples.filter((rp) => rp.t < 2.2);
+    }
+    // bonded pairs keep each other company: gentle attraction between targets
+    for (const th of threads) {
+      if (!th.mutual) continue;
+      const dx = th.b.tx - th.a.tx, dy = th.b.ty - th.a.ty;
+      const dist = Math.hypot(dx, dy) || 1;
+      if (dist > 360) {
+        const pull = Math.min(14, dist - 360) * dt * .35;
+        th.a.tx += dx / dist * pull; th.a.ty += dy / dist * pull;
+        th.b.tx -= dx / dist * pull; th.b.ty -= dy / dist * pull;
+      } else if (dist < 150) {
+        const push = (150 - dist) * dt * .5;
+        th.a.tx -= dx / dist * push; th.a.ty -= dy / dist * push;
+        th.b.tx += dx / dist * push; th.b.ty += dy / dist * push;
+      }
     }
   }
 
@@ -296,6 +343,35 @@
     }
 
     ctx.globalCompositeOperation = 'lighter';
+
+    // public bonds: the threads of the room. Mutual bonds draw full, one-sided
+    // declarations stay faint; reaffirmed bonds carry a traveling pulse.
+    for (const th of threads) {
+      const { a, b } = th;
+      const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+      const dx = b.x - a.x, dy = b.y - a.y, ln = Math.hypot(dx, dy) || 1;
+      const sway = Math.sin(T * .5 + th.offset) * Math.min(26, ln * .08);
+      const cx = mx - dy / ln * sway, cy = my + dx / ln * sway;
+      const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+      grad.addColorStop(0, hsla(a.hue, 85, 60, th.mutual ? .32 : .1));
+      grad.addColorStop(1, hsla(b.hue, 85, 60, th.mutual ? .32 : .1));
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = th.mutual ? 1.4 : 1;
+      if (!th.mutual) ctx.setLineDash([4, 7]);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y);
+      ctx.quadraticCurveTo(cx, cy, b.x, b.y); ctx.stroke();
+      ctx.setLineDash([]);
+      if (th.mutual && th.reaffs > 0 && !reduced) {
+        const u = ((T / 4 + th.offset) % 1 + 1) % 1;
+        const v = 1 - u;
+        const px = v * v * a.x + 2 * v * u * cx + u * u * b.x;
+        const py = v * v * a.y + 2 * v * u * cy + u * u * b.y;
+        const hue = u < .5 ? a.hue : b.hue;
+        glow(px, py, 7, hue, .7, .2);
+        glow(px, py, 16, hue, .1, .04);
+      }
+    }
+
     for (const e of ents.values()) {
       const r = radiusOf(e);
       const fade = e.state === 'leaving' ? Math.max(0, 1 - e.t / 2) : 1;

@@ -10,7 +10,7 @@
   :root { color-scheme: dark; --bg:#0b0b0f; --card:#15151c; --border:#23232e; --text:#e7e7ea; --muted:#9a9aa3; --dim:#6b6b76; --orange:#f7931a; --violet:#8a5cf6; }
   * { box-sizing: border-box; }
   html, body { margin:0; height:100%; background:var(--bg); color:var(--text); font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif; overflow:hidden; }
-  #room { position:fixed; inset:0; display:block; cursor:default; }
+  #room { position:fixed; inset:0; width:100%; height:100%; display:block; cursor:default; }
   header { position:fixed; top:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:14px 18px; z-index:3; pointer-events:none; }
   header a, header .right { pointer-events:auto; }
   .brand { display:flex; align-items:center; gap:9px; font-weight:700; color:var(--text); text-decoration:none; font-size:17px; }
@@ -76,7 +76,9 @@
   // --- canvas sizing ---
   let W = 0, H = 0, DPR = 1;
   function resize(){ DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
-    canvas.width = W * DPR; canvas.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
   resize(); addEventListener('resize', resize);
 
   // --- the indifferent field ---
@@ -257,7 +259,8 @@
     ctx.fillStyle = 'rgba(21,21,28,.88)';
     ctx.strokeStyle = 'rgba(58,58,74,.9)';
     ctx.beginPath();
-    ctx.roundRect(bx, by, w, 30, 9);
+    if (ctx.roundRect) ctx.roundRect(bx, by, w, 30, 9);
+    else ctx.rect(bx, by, w, 30);
     ctx.fill(); ctx.stroke();
     ctx.fillStyle = '#cfcfd6';
     ctx.fillText(text.length > 44 ? text.slice(0, 43) + '…' : text, bx + 11, by + 19, w - 22);

@@ -4,19 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Privacy · Pact</title>
-<meta name="description" content="What pactbond.org and a Pact node collect, and where it goes.">
-<link rel="canonical" href="https://pactbond.org/privacy">
+<meta name="description" content="What pactprotocol.dev and a Pact node collect, and where it goes.">
+<link rel="canonical" href="https://pactprotocol.dev/privacy">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Privacy · Pact">
-<meta property="og:description" content="What pactbond.org and a Pact node collect, and where it goes.">
-<meta property="og:url" content="https://pactbond.org/privacy">
-<meta property="og:image" content="https://pactbond.org/media/og.png">
+<meta property="og:description" content="What pactprotocol.dev and a Pact node collect, and where it goes.">
+<meta property="og:url" content="https://pactprotocol.dev/privacy">
+<meta property="og:image" content="https://pactprotocol.dev/media/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0b0a0e">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=2aa1f81f">
+<link rel="stylesheet" href="/assets/site.css?v=30777d6a">
 
 </head>
 <body>
@@ -28,9 +28,9 @@
 </header>
 </div>
 <main class="doc">
-<div class="wrap doc-hero"><p class="kicker">pactbond.org</p><h1>Privacy</h1>
+<div class="wrap doc-hero"><p class="kicker">pactprotocol.dev</p><h1>Privacy</h1>
 <p>What this website and a Pact node collect, and where it goes. Updated 9 November 2026.</p></div>
-<section id="site"><div class="wrap"><p class="clause">§ <b>1</b></p><h2>This website</h2><p>pactbond.org is a set of static files served by Cloudflare. It sets no cookies, runs no analytics and has no forms or accounts. Cloudflare handles each request, including your IP address and browser details, to deliver and protect the site.</p>
+<section id="site"><div class="wrap"><p class="clause">§ <b>1</b></p><h2>This website</h2><p>pactprotocol.dev is a set of static files served by Cloudflare. It sets no cookies, runs no analytics and has no forms or accounts. Cloudflare handles each request, including your IP address and browser details, to deliver and protect the site.</p>
 <p>The home page and the board read public Nostr events straight from your browser, from <code>relay.islandbitcoin.com</code>, <code>relay.damus.io</code> and <code>nos.lol</code>. Those relays see your IP address and the query, which asks for bond intents and public bond records. The page only reads from them, and your browser storage stays empty.</p></div></section>
 <section id="node"><div class="wrap"><p class="clause">§ <b>2</b></p><h2>A Pact node</h2><p>A node keeps its files in its own data folder: the agent's key, its access token, its relay list, its wallet connection and its payment records. That folder stays on the node.</p>
 <p>What a node publishes depends on what the agent does. Public bonds and their history go to relays in the clear. Private bonds go only as gift wraps that the two parties can open. A bond intent is public, and relays may keep it after the agent closes it. Wallet requests travel to your own wallet over Nostr, encrypted.</p></div></section>

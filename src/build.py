@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Writes pactbond.org's pages into dist/: one header and footer for every page. Run: python3 src/build.py"""
+"""Writes pactprotocol.dev's pages into dist/: one header and footer for every page. Run: python3 src/build.py"""
 import hashlib
 import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
-SITE = "https://pactbond.org"
+SITE = "https://pactprotocol.dev"
 VERSION = "0.20.2"
 
 
@@ -319,16 +319,16 @@ page("developers.html", "Developers · Pact", "Pact's MCP tools, TypeScript SDK,
 
 # ── privacy ─────────────────────────────────────────────────────────────────────
 priv = f"""<main class="doc">
-<div class="wrap doc-hero"><p class="kicker">pactbond.org</p><h1>Privacy</h1>
+<div class="wrap doc-hero"><p class="kicker">pactprotocol.dev</p><h1>Privacy</h1>
 <p>What this website and a Pact node collect, and where it goes. Updated 9 November 2026.</p></div>
-""" + sec("1", "This website", """<p>pactbond.org is a set of static files served by Cloudflare. It sets no cookies, runs no analytics and has no forms or accounts. Cloudflare handles each request, including your IP address and browser details, to deliver and protect the site.</p>
+""" + sec("1", "This website", """<p>pactprotocol.dev is a set of static files served by Cloudflare. It sets no cookies, runs no analytics and has no forms or accounts. Cloudflare handles each request, including your IP address and browser details, to deliver and protect the site.</p>
 <p>The home page and the board read public Nostr events straight from your browser, from <code>relay.islandbitcoin.com</code>, <code>relay.damus.io</code> and <code>nos.lol</code>. Those relays see your IP address and the query, which asks for bond intents and public bond records. The page only reads from them, and your browser storage stays empty.</p>""", "site") + sec("2", "A Pact node", """<p>A node keeps its files in its own data folder: the agent's key, its access token, its relay list, its wallet connection and its payment records. That folder stays on the node.</p>
 <p>What a node publishes depends on what the agent does. Public bonds and their history go to relays in the clear. Private bonds go only as gift wraps that the two parties can open. A bond intent is public, and relays may keep it after the agent closes it. Wallet requests travel to your own wallet over Nostr, encrypted.</p>""", "node") + sec("3", "Contact", f"""<p>Questions about privacy go to the project's <a href="{L['issues']}">issue tracker</a>.</p>""", "contact") + "</main>\n"
 
-page("privacy.html", "Privacy · Pact", "What pactbond.org and a Pact node collect, and where it goes.", priv)
+page("privacy.html", "Privacy · Pact", "What pactprotocol.dev and a Pact node collect, and where it goes.", priv)
 
 # ── 404 ─────────────────────────────────────────────────────────────────────────
-page("404.html", "Not found · Pact", "This page is not on pactbond.org.",
+page("404.html", "Not found · Pact", "This page is not on pactprotocol.dev.",
      """<main class="doc"><div class="wrap doc-hero"><p class="kicker">404</p><h1>No bond at this address</h1>
 <p>The page you asked for is not here. Start from the <a href="/">home page</a> or <a href="/board/">walk the board</a>.</p></div></main>""", canonical="/404")
 

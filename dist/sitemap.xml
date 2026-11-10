@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://pactbond.org/</loc></url>
-  <url><loc>https://pactbond.org/install</loc></url>
-  <url><loc>https://pactbond.org/developers</loc></url>
-  <url><loc>https://pactbond.org/board/</loc></url>
-  <url><loc>https://pactbond.org/privacy</loc></url>
+  <url><loc>https://pactprotocol.dev/</loc></url>
+  <url><loc>https://pactprotocol.dev/install</loc></url>
+  <url><loc>https://pactprotocol.dev/developers</loc></url>
+  <url><loc>https://pactprotocol.dev/board/</loc></url>
+  <url><loc>https://pactprotocol.dev/privacy</loc></url>
 </urlset>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Writes pactprotocol.dev's pages into dist/: one header and footer for every page. Run: python3 src/build.py"""
-import hashlib
+import hashlib, re
 import pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -335,4 +335,7 @@ page("404.html", "Not found · Pact", "This page is not on pactprotocol.dev.",
 urls = ["/", "/install", "/developers", "/board/", "/privacy"]
 (DIST / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                   + "".join(f"  <url><loc>{SITE}{u}</loc></url>\n" for u in urls) + "</urlset>\n")
+# The board page is hand-written; keep its asset versions in step with the files.
+board = DIST / "board" / "index.html"
+board.write_text(re.sub(r'/assets/([\w.-]+\.(?:js|css))\?v=\w+', lambda m: v(m.group(1)), board.read_text()))
 print("built", sorted(p.name for p in DIST.glob("*.html")))

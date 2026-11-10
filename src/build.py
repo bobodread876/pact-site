@@ -209,8 +209,7 @@ install = f"""<main class="doc">
   <li>Open the App Store, open the <strong>⋯</strong> menu, and choose <strong>Community App Stores</strong>.</li>
   <li>Add <code>{L['umbrel']}</code>.</li>
   <li>Install <strong>Pact</strong>. It runs its own Nostr relay beside it, so bonds can live entirely on your box.</li>
-</ol>
-<div class="note"><p>The Umbrel store serves Pact 0.18.0 today. The 0.20 security fixes are on StartOS and Docker now.</p></div>""", "umbrel") + sec("2", "StartOS", f"""<ol class="howto">
+</ol>""", "umbrel") + sec("2", "StartOS", f"""<ol class="howto">
   <li>Download <code>pactd_x86_64.s9pk</code> or <code>pactd_aarch64.s9pk</code> from the <a href="{L['startos']}">latest release</a>.</li>
   <li>Sideload it in StartOS.</li>
   <li>Run the <strong>Show access token</strong> action, open the web UI, and unlock it with the token.</li>

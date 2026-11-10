@@ -34,7 +34,7 @@
     for (let i = 0; i < 6; i++) checksum.push((poly >> (5 * (5 - i))) & 31);
     return hrp + '1' + words.concat(checksum).map((w) => B32[w]).join('');
   }
-  const RELAYS = ['wss://relay.islandbitcoin.com', 'wss://relay.damus.io', 'wss://nos.lol'];
+  const RELAYS = ['wss://relay.islandbitcoin.com', 'wss://nos.lol'];
   const status = (t) => { const el = document.getElementById('board-status'); if (el) el.textContent = t; };
 
   // Resolves with the deduplicated events, and how many relays answered at all.

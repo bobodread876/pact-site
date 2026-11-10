@@ -1,5 +1,5 @@
 (() => {
-  const RELAYS = ['wss://relay.islandbitcoin.com', 'wss://relay.damus.io', 'wss://nos.lol'];
+  const RELAYS = ['wss://relay.islandbitcoin.com', 'wss://nos.lol'];
   const canvas = document.getElementById('room');
   const ctx = canvas.getContext('2d');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
